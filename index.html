@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>quiz with vivek</title>
+</head>
+
+<style>
+    *{
+        margin: 0px;
+        padding: 0px;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+    body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: rgb(26, 26, 26);
+    }
+    .container{
+        /* border: 2px solid rgb(159, 159, 159); */
+        box-shadow: 0px 0px 30px white;
+        margin: 20px;
+        padding: 30px;
+        border-radius: 30px;
+        background-color: #ffffff94;
+        text-align: center;
+        width: fit-content;
+    }
+    .hidden{
+        display: none;
+    }
+
+    button{
+        padding: 10px;
+        box-shadow: 0px 0px 10px rgb(92, 92, 92);
+        margin: 10px;
+        border-radius: 10px;
+        border: none;
+    }
+    button:hover{
+        background-color: rgb(216, 216, 216);
+        transition: 0.3s ease-out;
+        cursor: pointer;
+    }
+
+    #single-question-container{
+        box-shadow: 0px 0px 10px black;
+        background-color: rgb(62, 62, 62);
+        margin: 20px;
+        padding: 30px;
+        border: 2px solid rgb(56, 56, 56);
+        border-radius: 20px;
+        color: rgba(255, 255, 255, 0.563);
+    }
+
+    #choices-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+li {
+    padding: 15px;
+    margin: 5px;
+    border: 2px solid rgb(135, 135, 135);
+    border-radius: 20px;
+    box-shadow: 0px 0px 10px rgb(167, 167, 167);
+    list-style:decimal;
+    font-size: 20px;
+    text-align: center;
+}
+
+li:nth-child(1),
+li:nth-child(2) {
+    align-self: start;
+}
+
+li:nth-child(3),
+li:nth-child(4) {
+    align-self: end;
+}
+    li:hover{
+        background-color: #232323;
+        transition: 0.3s;
+        cursor:pointer;
+    }
+
+    #question-text{
+        margin-bottom: 30px;
+        font-size: 30px;
+    }
+    .selectedcolor{
+        background-color: #232323;
+    }
+
+</style>
+<body>
+    <div class="container">
+        <h1 class="title">Quiz with ME</h1>
+        <button id="start-btn">Click to Start</button>
+        <div id="all-question-container" class="hidden">
+            <div id="single-question-container">
+                <div id="question-text"></div>
+                <div id="choices-list"></div>
+            </div>
+        </div>
+        <button id="next-question-btn" class="hidden">Next Question</button>
+        <div id="result-container" class="hidden">
+            <h2>Your Score:</h2>
+            <p id="score"></p>
+            <button id="restart-btn">Restart Quiz</button>
+        </div>
+    </div>
+</body>
+<script>
+
+
+    document.addEventListener("DOMContentLoaded",()=>{
+        const startbtn = document.getElementById("start-btn");
+        const allquestioncontainer = document.getElementById("all-question-container");
+        const singlequestion = document.getElementById("single-question-container");
+        const questiontext = document.getElementById("question-text");
+        const choiceslist = document.getElementById("choices-list");
+        const nextquestionbtn = document.getElementById("next-question-btn");
+        const resultcontainer = document.getElementById("result-container");
+        const Yourscore = document.getElementById("score");
+        const resetbtn = document.getElementById("restart-btn");
+
+
+        const questions = [
+            {
+                question: "What is the capital of France?",
+                options: ["Berlin", "Madrid", "Paris", "Rome"],
+                correctAnswer: "Paris"
+            },
+            {
+                question: "Which planet is known as the Red Planet?",
+                options: ["Earth", "Mars", "Jupiter", "Saturn"],
+                correctAnswer: "Mars"
+            },
+            {
+                question: "What is the largest ocean on Earth?",
+                options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
+                correctAnswer: "Pacific Ocean"
+            }
+        ];
+
+        startbtn.addEventListener("click", ()=>{
+            startbtn.classList.add('hidden')
+            startquiz()
+        })
+
+        let currentquestionindex = 0;
+        let score = 0;
+
+        nextquestionbtn.addEventListener("click",()=>{
+            currentquestionindex++;
+            if(currentquestionindex < questions.length){
+                showQuestion()
+            }else{
+                showResult()
+            }
+        })
+
+        resetbtn.addEventListener("click",()=>{
+            currentquestionindex = 0;
+            score = 0;
+            resultcontainer.classList.add("hidden");
+            startquiz()
+        })
+
+
+        function startquiz(){
+            allquestioncontainer.classList.remove("hidden");
+            resultcontainer.classList.add("hidden")
+            showQuestion();
+        }
+        
+        function showQuestion(){
+            nextquestionbtn.classList.add("hidden")
+            questiontext.textContent = questions[currentquestionindex].question;
+            choiceslist.innerHTML = "";
+            questions[currentquestionindex].options.forEach((choice)=>{
+                const li = document.createElement("li")
+                li.textContent = choice;
+                li.addEventListener("click",()=> {
+                    selectedanswer(choice)
+                    li.classList.add('selectedcolor')
+                    nextquestionbtn.classList.remove("hidden")
+                })
+                choiceslist.append(li);
+            })
+
+        }
+
+        function selectedanswer(choice){
+            const rightanswer = questions[currentquestionindex].correctAnswer;
+            if(choice === rightanswer){
+                score++
+            }
+        }
+
+        function showResult(){
+            nextquestionbtn.classList.add("hidden")
+            allquestioncontainer.classList.add("hidden")
+            resultcontainer.classList.remove("hidden")
+            Yourscore.innerHTML = `
+            ${score} out of ${questions.length}
+            `
+
+        }
+        
+
+
+
+
+
+    })
+
+</script>
+</html>
